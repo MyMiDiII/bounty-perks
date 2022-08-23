@@ -119,6 +119,7 @@
         breakbefore=.,
         fontsize=\footnotesize\ttfamily,
         numbersep=7mm,
+        firstnumber=1,
         % для firstline, lastline и др.
         #3
     },
@@ -126,19 +127,24 @@
 	colframe=black,
 	breakable,
 	% стиль основной подписи
-	title=Листинг \thetcbcounter~--- #4,
+	title={\parbox[t][][t]{3.5cm}{Листинг \thetcbcounter~---}\parbox[t][][t]{13.1cm}{#4}},
 	attach boxed title to top left,
 	boxed title style={enhanced jigsaw, opacityfill=1, sharp corners, boxrule=0pt},
 	coltitle=black,
 	colbacktitle=white,
 	% подписи при переносе
+	overlay first={
+		\draw[line width=.5pt] (frame.south west)--(frame.south east);
+	},
 	overlay middle={
         \draw[line width=.5pt] (frame.south west)--(frame.south east);
         \draw[line width=.5pt] (frame.north west)--(frame.north east);
-        \node[anchor=south west] at (frame.north west) {Продолжение листинга \thetcbcounter};},
+        \node[anchor=south west] at (frame.north west) {Продолжение листинга \thetcbcounter};
+	},
 	overlay last={
         \draw[line width=.5pt] (frame.north west)--(frame.north east);
-        \node[anchor=south west] at (frame.north west) {Продолжение листинга \thetcbcounter};},
+        \node[anchor=south west] at (frame.north west) {Продолжение листинга \thetcbcounter};
+	},
 	label=lst:#5,
 	#6
 }
