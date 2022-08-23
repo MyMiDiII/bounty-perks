@@ -47,9 +47,12 @@
 \titleformat{name=\chapter,numberless}{}{}{0pt}{\large\bfseries\centering}
 \titleformat{\section}{\large\bfseries}{\thesection}{14pt}{\large\bfseries}
 \titleformat{\subsection}{\large\bfseries}{\thesubsection}{14pt}{\large\bfseries}
+\titleformat{\subsubsection}{\large\bfseries}{\thesubsubsection}{14pt}{\large\bfseries}
 \titlespacing{\chapter}{12.5mm}{-22pt}{10pt}
 \titlespacing{\section}{12.5mm}{10pt}{10pt}
 \titlespacing{\subsection}{12.5mm}{10pt}{10pt}
+\titlespacing{\subsubsection}{12.5mm}{10pt}{10pt}
+\setcounter{secnumdepth}{3}
 
 % Подключения пакетов для фигур
 \RequirePackage{graphicx}
@@ -61,7 +64,7 @@
 \newcommand{\imgw}[4]
 {
 	\begin{figure}[#2]
-		\center{\includegraphics[width=#3]{inc/img/#1}}
+		\center{\includegraphics[width=#3]{../img/#1}}
 		\caption{#4}
 		\label{img:#1}
 	\end{figure}
@@ -69,7 +72,7 @@
 \newcommand{\imgh}[4]
 {
 	\begin{figure}[#2]
-		\center{\includegraphics[height=#3]{inc/img/#1}}
+		\center{\includegraphics[height=#3]{../img/#1}}
 		\caption{#4}
 		\label{img:#1}
 	\end{figure}
@@ -77,7 +80,7 @@
 \newcommand{\imgs}[4]
 {
 	\begin{figure}[#2]
-		\center{\includegraphics[scale=#3]{inc/img/#1}}
+		\center{\includegraphics[scale=#3]{../img/#1}}
 		\caption{#4}
 		\label{img:#1}
 	\end{figure}
@@ -92,26 +95,52 @@
 \pgfplotsset{compat=newest}
 
 % Настройка листингов
-\RequirePackage{listings}
-\RequirePackage{listingsutf8}
-\lstset{
-	basicstyle=\small\ttfamily,
-	frame=single,
-	numbers=none,
-	breaklines=true,
-	inputencoding=utf8/koi8-r,
-}
-
-% Создание листинга
-\newcommand{\listingfile}[4]{
-	\lstinputlisting[
-		float=h!,
-		abovecaptionskip=-5pt,
-		caption={#3},
-		label={lst:#1},
-		language={#2},
-		#4,
-	]{inc/lst/#1}
+\RequirePackage[listings]{tcolorbox}
+\tcbuselibrary{listings,breakable,minted,skins}
+% изменение размера нумерации строк
+\renewcommand\theFancyVerbLine{\scriptsize\arabic{FancyVerbLine}}
+\newtcbinputlisting[auto counter,number within=chapter]{\mylisting}[6][]{
+	% для отображение box title, если листинг на одной странице
+	enhanced,
+	% отступ перед листингом
+	before skip=10pt,
+	% рамка без закрглений
+	arc=0mm,
+	% тонкая рамка
+	boxrule=1pt,
+    listing only,
+	listing file={../../src/#2},
+	% стиль листинга
+    listing engine=minted,
+    minted language=#1,
+    minted options = {
+        linenos,
+        breaklines=true,
+        breakbefore=.,
+        fontsize=\footnotesize\ttfamily,
+        numbersep=7mm,
+        % для firstline, lastline и др.
+        #3
+    },
+	colback=white,
+	colframe=black,
+	breakable,
+	% стиль основной подписи
+	title=Листинг \thetcbcounter~--- #4,
+	attach boxed title to top left,
+	boxed title style={enhanced jigsaw, opacityfill=1, sharp corners, boxrule=0pt},
+	coltitle=black,
+	colbacktitle=white,
+	% подписи при переносе
+	overlay middle={
+        \draw[line width=.5pt] (frame.south west)--(frame.south east);
+        \draw[line width=.5pt] (frame.north west)--(frame.north east);
+        \node[anchor=south west] at (frame.north west) {Продолжение листинга \thetcbcounter};},
+	overlay last={
+        \draw[line width=.5pt] (frame.north west)--(frame.north east);
+        \node[anchor=south west] at (frame.north west) {Продолжение листинга \thetcbcounter};},
+	label=lst:#5,
+	#6
 }
 
 % Настройка подписей
@@ -413,6 +442,19 @@
 	\tableofcontents
 }
 
+% Отточие у глав
+\RequirePackage{tocloft}
+\renewcommand{\cftchapleader}{\cftdotfill{\cftdotsep}}
+
+% Настройка стиля заголовка содержания
+
+% Стиль с выравниванием по центру
+\renewcommand{\cfttoctitlefont}{\hfill\large\bfseries}
+\renewcommand{\cftaftertoctitle}{\hfill\hfill}
+
+% Отступы до и после
+\setlength\cftbeforetoctitleskip{-22pt}
+\setlength\cftaftertoctitleskip{15pt}
 
 % Определения, обозначения и сокращения ----------------------------------------
 % ------------------------------------------------------------------------------
@@ -450,6 +492,30 @@
 }
 {
 	\end{description}
+}
+
+% Введение, заключение ---------------------------------------------------------
+% ------------------------------------------------------------------------------
+
+% Создание введения
+\newcommand{\intro}
+{
+	\chapter*{ВВЕДЕНИЕ}
+	\addcontentsline{toc}{chapter}{ВВЕДЕНИЕ}
+}
+
+% Создание заключение
+\newcommand{\conclusion}
+{
+	\chapter*{ЗАКЛЮЧЕНИЕ}
+	\addcontentsline{toc}{chapter}{ЗАКЛЮЧЕНИЕ}
+}
+
+% Создание главы без номера
+\newcommand{\nonumchapter}[1]
+{
+	\chapter*{#1}
+	\addcontentsline{toc}{chapter}{#1}
 }
 
 
