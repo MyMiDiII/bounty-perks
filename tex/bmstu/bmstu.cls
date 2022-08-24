@@ -61,6 +61,7 @@
 \RequirePackage{tikzscale}
 
 % Создание рисунков
+\RequirePackage{rotating}
 \newcommand{\imgw}[4]
 {
 	\begin{figure}[#2]
@@ -84,6 +85,25 @@
 		\caption{#4}
 		\label{img:#1}
 	\end{figure}
+}
+
+\newcommand{\landimgw}[3]
+{
+	\center{\includegraphics[width=#2]{../img/#1}}
+	\caption{#3}
+	\label{img:#1}
+}
+\newcommand{\landimgh}[3]
+{
+	\center{\includegraphics[height=#2]{../img/#1}}
+	\caption{#3}
+	\label{img:#1}
+}
+\newcommand{\landimgs}[3]
+{
+	\center{\includegraphics[scale=#2]{../img/#1}}
+	\caption{#3}
+	\label{img:#1}
 }
 
 % Подключение пакетов таблиц
@@ -492,7 +512,7 @@
 	\chapter*{ОБОЗНАЧЕНИЯ И СОКРАЩЕНИЯ}
 	\addcontentsline{toc}{chapter}{ОБОЗНАЧЕНИЯ И СОКРАЩЕНИЯ}
 	
-	В настоящей расчетно-пояснительной записке применяют следующие сокращения и обозначения.
+	В настоящем отчете применяют следующие сокращения и обозначения.
 	
 	\begin{description}[leftmargin=0pt]
 }
