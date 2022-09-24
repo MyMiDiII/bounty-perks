@@ -109,6 +109,17 @@
 % Подключение пакетов таблиц
 \RequirePackage{tabularx}
 \RequirePackage{booktabs}
+\RequirePackage{threeparttable}
+\RequirePackage{longtable}
+
+% Настройка списков
+\renewcommand{\labelitemi}{$-$}
+\RequirePackage{enumitem}
+\RequirePackage{multicol}
+% вторые и след строки выровнены по первой
+\setlist{nosep, labelindent=\parindent, leftmargin=*, topsep=5px}
+% вторые и след строки выровнены по левому краю
+%\setlist{nosep, leftmargin=\parindent, wide}
 
 % Настройка графиков
 \RequirePackage{pgfplots}
@@ -123,13 +134,13 @@
 	% для отображение box title, если листинг на одной странице
 	enhanced,
 	% отступ перед листингом
-	before skip=10pt,
+	left skip =10pt,
 	% рамка без закрглений
 	arc=0mm,
 	% тонкая рамка
 	boxrule=1pt,
     listing only,
-	listing file={../../src/#2},
+	listing file={../listings/#2},
 	% стиль листинга
     listing engine=minted,
     minted language=#1,
@@ -159,14 +170,41 @@
 	overlay middle={
         \draw[line width=.5pt] (frame.south west)--(frame.south east);
         \draw[line width=.5pt] (frame.north west)--(frame.north east);
-        \node[anchor=south west] at (frame.north west) {Продолжение листинга \thetcbcounter};
+        %\node[anchor=south west] at (frame.north west) {Продолжение листинга \thetcbcounter};
 	},
 	overlay last={
         \draw[line width=.5pt] (frame.north west)--(frame.north east);
-        \node[anchor=south west] at (frame.north west) {Продолжение листинга \thetcbcounter};
+        %\node[anchor=south west, minimum height=5cm] at (frame.north west) {Продолжение листинга \thetcbcounter};
 	},
+	%extras last pre={},
 	label=lst:#5,
 	#6
+}
+
+\RequirePackage{listings}
+\RequirePackage{listingsutf8}
+\lstset{
+	basicstyle=\small\ttfamily,
+	frame=single,
+	numbers=left,
+	numberstyle=\footnotesize,
+	numbersep=5pt,
+	breaklines=true,
+	inputencoding=utf8/koi8-r,
+	xleftmargin=15pt
+}
+
+% Создание листинга
+\newcommand{\listingfile}[5]{
+	\lstinputlisting[
+		float=!htbp,
+		abovecaptionskip=-5pt,
+		caption={#4},
+		label={lst:#5},
+		language={#1},
+		tabsize=2,
+		#3,
+	]{../listings/#2}
 }
 
 % Настройка подписей
@@ -452,7 +490,8 @@
 	\chapter*{РЕФЕРАТ}
 	\addcontentsline{toc}{chapter}{РЕФЕРАТ}
 	
-	Расчетно-пояснительная записка \begin{NoHyper}\pageref{LastPage}\end{NoHyper}~с., \totfig~рис., \tottab~табл., \thetotbibentries~источн., \total{appendixchapters}~прил.
+	Расчетно-пояснительная записка \begin{NoHyper}\pageref{LastPage}\end{NoHyper}~с., \totfig~рис., \tottab~табл., \thetotbibentries~источн., 1~прил.
+	%\total{appendixchapters}~прил.
 	
 	\noindent \MakeUppercase{#1} \par
 }{}
@@ -489,7 +528,7 @@
 \RequirePackage{enumitem}
 \newcommand{\definition}[2]
 {
-	\item \noindent #1 --- #2
+ 	\item \noindent #1 --- #2
 }
 
 % Создание страницы определений
@@ -500,7 +539,7 @@
 	
 	В настоящей расчетно-пояснительной записке применяют следующие термины с соответствующими определениями.
 	
-	\begin{description}[leftmargin=0pt]
+	\begin{description}[leftmargin=-1pt]
 }
 {
 	\end{description}
@@ -514,7 +553,7 @@
 	
 	В настоящем отчете применяют следующие сокращения и обозначения.
 	
-	\begin{description}[leftmargin=0pt]
+	\begin{description}[leftmargin=-4pt]
 }
 {
 	\end{description}
