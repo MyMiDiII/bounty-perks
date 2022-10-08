@@ -60,6 +60,9 @@
 \RequirePackage{wrapfig}
 \RequirePackage{tikzscale}
 
+% Текст
+\newcommand{\bfit}[1]{\textit{\textbf{#1}}}
+
 % Создание рисунков
 \RequirePackage{rotating}
 \newcommand{\imgw}[4]
@@ -104,6 +107,21 @@
 	\center{\includegraphics[scale=#2]{../img/#1}}
 	\caption{#3}
 	\label{img:#1}
+}
+
+\newcommand{\onetwoimage}[4]
+{
+\begin{figure}[htb]
+    \centering
+    \begin{subfigure}[b]{\textwidth}
+        \centering
+        \includegraphics[width=0.5\linewidth]{../img/#1}%
+        \hfill
+        \includegraphics[width=0.5\linewidth]{../img/#2}
+    \end{subfigure}
+    \caption{#3}
+    \label{img:#4}
+\end{figure}
 }
 
 % Подключение пакетов таблиц
@@ -213,6 +231,7 @@
 	figurename=Рисунок,
 	singlelinecheck=false,
 ]{caption}
+\usepackage{subcaption}
 \captionsetup[figure]{justification=centering}
 
 % Подключение пакетов для альбомной ориентации
@@ -222,6 +241,7 @@
 % Подключение математических пакетов
 \RequirePackage{amsmath}
 \RequirePackage{amssymb}
+\DeclareMathOperator{\erf}{erf}
 
 % Настройка библиографии
 \RequirePackage[
