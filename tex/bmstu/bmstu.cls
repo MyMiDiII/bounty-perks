@@ -24,6 +24,12 @@
 	bottom=20mm,
 ]{geometry}
 
+% Текст
+\newcommand{\bfit}[1]
+{
+    \textbf{\textit{#1}}
+}
+
 % Настройка переносов
 \RequirePackage{microtype}
 \sloppy
@@ -59,9 +65,6 @@
 \RequirePackage{float}
 \RequirePackage{wrapfig}
 \RequirePackage{tikzscale}
-
-% Текст
-\newcommand{\bfit}[1]{\textit{\textbf{#1}}}
 
 % Создание рисунков
 \RequirePackage{rotating}
@@ -107,21 +110,6 @@
 	\center{\includegraphics[scale=#2]{../img/#1}}
 	\caption{#3}
 	\label{img:#1}
-}
-
-\newcommand{\onetwoimage}[4]
-{
-\begin{figure}[htb]
-    \centering
-    \begin{subfigure}[b]{\textwidth}
-        \centering
-        \includegraphics[width=0.5\linewidth]{../img/#1}%
-        \hfill
-        \includegraphics[width=0.5\linewidth]{../img/#2}
-    \end{subfigure}
-    \caption{#3}
-    \label{img:#4}
-\end{figure}
 }
 
 % Подключение пакетов таблиц
@@ -231,7 +219,6 @@
 	figurename=Рисунок,
 	singlelinecheck=false,
 ]{caption}
-\usepackage{subcaption}
 \captionsetup[figure]{justification=centering}
 
 % Подключение пакетов для альбомной ориентации
@@ -241,7 +228,6 @@
 % Подключение математических пакетов
 \RequirePackage{amsmath}
 \RequirePackage{amssymb}
-\DeclareMathOperator{\erf}{erf}
 
 % Настройка библиографии
 \RequirePackage[
@@ -293,7 +279,7 @@
 \makeatother
 
 % Создание шапки титульной страницы
-\newcommand{\titlepageheader}[2]
+\newcommand{\titlepageuniheader}[2]
 {
 	\begin{wrapfigure}[7]{l}{0.14\linewidth}
 		\vspace{3.4mm}
@@ -325,6 +311,122 @@
 		КАФЕДРА \longunderline{<<#2>>} \\
 	}
 }
+
+% Создание шапки титульной страницы
+\newcommand{\titlepageheader}[0]
+{
+    \fontsize{12pt}{12pt}\selectfont
+    \noindent
+    \begin{minipage}{0.15\textwidth}
+        \includegraphics[width=\linewidth]{bmstu-logo}
+    \end{minipage}
+    \noindent
+    \begin{minipage}{0.85\textwidth}\centering
+    \linespread{1.1}\selectfont
+    \textbf{Министерство науки и высшего образования Российской Федерации}\\
+    \textbf{Федеральное государственное бюджетное образовательное
+    учреждение\\высшего образования}\\
+    \textbf{«Московский государственный технический университет~\\имени
+    Н.Э.~Баумана}\\
+    \textbf{(национальный исследовательский университет)»}\\
+    \textbf{(МГТУ им. Н.Э.~Баумана)}
+    \end{minipage}
+    \begin{spacing}{0.2}
+        ~\\
+    \end{spacing}
+    \noindent
+    \rule{17cm}{3pt}
+    \\
+    \begin{spacing}{0.1}
+        ~\\
+    \end{spacing}
+    \noindent ФАКУЛЬТЕТ
+    \uline
+    {
+        ~~~~~~~~~~~~~~~~~~~~~~~~
+        <<Информатика и системы управления>>
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    }
+    \newline\newline
+    \noindent КАФЕДРА
+    \uline{
+        ~~~~~~~~~~~~
+        <<Программное обеспечение ЭВМ и информационные технологии>>
+        ~~~~~~
+    }
+    \newline
+}
+
+
+\newenvironment{performers}
+{
+    \fontsize{14pt}{14pt}\selectfont
+    \centering
+    \tabularx{\textwidth}{lcXcc}
+}
+{
+    \endtabularx
+}
+
+\newcommand{\student}[2]
+{
+    Студент: &
+    $\text{\uline{#1}}$ &
+    &
+    $\text{\uline{~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~}}$ &
+    $\text{\uline{#2}}$ \\
+    &
+    \footnotesize (группа) &
+    &
+    \footnotesize (подпись, дата) &
+    \footnotesize (И. О. Фамилия) \\
+}
+
+\newcommand{\performersspace}[0]
+{
+    & & & & \\
+}
+
+\newcommand{\supervisor}[1]
+{
+    Преподаватель: &
+    &
+    &
+    $\text{\uline{~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~}}$ &
+    $\text{\uline{#1}}$ \\
+    &
+    &
+    &
+    \footnotesize (подпись, дата) &
+    \footnotesize (И. О. Фамилия) \\
+}
+
+\newcommand{\makeyear}
+{
+    \fontsize{14pt}{14pt}\selectfont
+        \begin{center}
+        \textit{\the\year~г.}
+        \end{center}
+}
+
+
+\newcommand{\titlerw}[1]
+{
+    \fontsize{22pt}{22pt}\selectfont
+    \begin{center}
+        \textbf{РАСЧЕТНО-ПОЯСНИТЕЛЬНАЯ ЗАПИСКА}\\
+        ~\\
+        \fontsize{20pt}{20pt}\selectfont
+        \textbf{\textit{К НАУЧНО-ИССЛЕДОВАТЕЛЬСКОЙ РАБОТЕ}}\\
+        \fontsize{14pt}{14pt}\selectfont
+        ~\\
+        \fontsize{20pt}{20pt}\selectfont
+        \textbf{\textit{НА ТЕМУ:}}\\
+        ~\\
+        <<#1>>
+    \end{center}
+}
+
 
 % Установка заголовков РПЗ
 \newcommand{\titlepagenotetitle}[2]
@@ -510,7 +612,7 @@
 	\chapter*{РЕФЕРАТ}
 	\addcontentsline{toc}{chapter}{РЕФЕРАТ}
 	
-	Расчетно-пояснительная записка \begin{NoHyper}\pageref{LastPage}\end{NoHyper}~с., \totfig~рис., \tottab~табл., \thetotbibentries~источн., 1~прил.
+	Расчетно-пояснительная записка \begin{NoHyper}\pageref{LastPage}\end{NoHyper}~с., \totfig~рис., \tottab~табл., \thetotbibentries~источн., 0~прил.
 	%\total{appendixchapters}~прил.
 	
 	\noindent \MakeUppercase{#1} \par
