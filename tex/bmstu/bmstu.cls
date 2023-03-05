@@ -24,12 +24,6 @@
 	bottom=20mm,
 ]{geometry}
 
-% Текст
-\newcommand{\bfit}[1]
-{
-    \textbf{\textit{#1}}
-}
-
 % Настройка переносов
 \RequirePackage{microtype}
 \sloppy
@@ -66,6 +60,11 @@
 \RequirePackage{wrapfig}
 \RequirePackage{tikzscale}
 
+% Текст
+\newcommand{\bfit}[1]{\textit{\textbf{#1}}}
+\RequirePackage{xcolor}
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+
 % Создание рисунков
 \RequirePackage{rotating}
 \newcommand{\imgw}[4]
@@ -93,25 +92,6 @@
 	\end{figure}
 }
 
-\newcommand{\landimgw}[3]
-{
-	\center{\includegraphics[width=#2]{../img/#1}}
-	\caption{#3}
-	\label{img:#1}
-}
-\newcommand{\landimgh}[3]
-{
-	\center{\includegraphics[height=#2]{../img/#1}}
-	\caption{#3}
-	\label{img:#1}
-}
-\newcommand{\landimgs}[3]
-{
-	\center{\includegraphics[scale=#2]{../img/#1}}
-	\caption{#3}
-	\label{img:#1}
-}
-
 % Подключение пакетов таблиц
 \RequirePackage{tabularx}
 \RequirePackage{booktabs}
@@ -119,9 +99,10 @@
 \RequirePackage{longtable}
 
 % Настройка списков
-\renewcommand{\labelitemi}{$-$}
+\renewcommand{\labelitemi}{---}
 \RequirePackage{enumitem}
 \RequirePackage{multicol}
+\RequirePackage{multirow}
 % вторые и след строки выровнены по первой
 \setlist{nosep, labelindent=\parindent, leftmargin=*, topsep=5px}
 % вторые и след строки выровнены по левому краю
@@ -136,6 +117,7 @@
 \tcbuselibrary{listings,breakable,minted,skins}
 % изменение размера нумерации строк
 \renewcommand\theFancyVerbLine{\scriptsize\arabic{FancyVerbLine}}
+% пока не проходит нормоконтроль
 \newtcbinputlisting[auto counter,number within=chapter]{\mylisting}[6][]{
 	% для отображение box title, если листинг на одной странице
 	enhanced,
@@ -176,14 +158,65 @@
 	overlay middle={
         \draw[line width=.5pt] (frame.south west)--(frame.south east);
         \draw[line width=.5pt] (frame.north west)--(frame.north east);
-        %\node[anchor=south west] at (frame.north west) {Продолжение листинга \thetcbcounter};
+        \node[anchor=south west] at (frame.north west) {Продолжение листинга \thetcbcounter};
 	},
 	overlay last={
         \draw[line width=.5pt] (frame.north west)--(frame.north east);
-        %\node[anchor=south west, minimum height=5cm] at (frame.north west) {Продолжение листинга \thetcbcounter};
+        \node[anchor=south west] at (frame.north west) {Продолжение листинга \thetcbcounter};
 	},
 	%extras last pre={},
-	label=lst:#5,
+    label={lst:#5},
+	#6
+}
+
+\newtcbinputlisting[auto counter,number within=chapter]{\mylistingadd}[7][]{
+	% для отображение box title, если листинг на одной странице
+	enhanced,
+	% отступ перед листингом
+	left skip =10pt,
+	% рамка без закрглений
+	arc=0mm,
+	% тонкая рамка
+	boxrule=1pt,
+    listing only,
+	listing file={../listings/#2},
+	% стиль листинга
+    listing engine=minted,
+    minted language=#1,
+    minted options = {
+        linenos,
+        breaklines=true,
+        breakbefore=.,
+        fontsize=\footnotesize\ttfamily,
+        numbersep=7mm,
+        firstnumber=1,
+        % для firstline, lastline и др.
+        #3
+    },
+	colback=white,
+	colframe=black,
+	breakable,
+	% стиль основной подписи
+	title={\parbox[t][][t]{3.5cm}{Листинг A.#7~---}\parbox[t][][t]{13.1cm}{#4}},
+	attach boxed title to top left,
+	boxed title style={enhanced jigsaw, opacityfill=1, sharp corners, boxrule=0pt},
+	coltitle=black,
+	colbacktitle=white,
+	% подписи при переносе
+	overlay first={
+		\draw[line width=.5pt] (frame.south west)--(frame.south east);
+	},
+	overlay middle={
+        \draw[line width=.5pt] (frame.south west)--(frame.south east);
+        \draw[line width=.5pt] (frame.north west)--(frame.north east);
+        \node[anchor=south west] at (frame.north west) {Продолжение листинга A.#7};
+	},
+	overlay last={
+        \draw[line width=.5pt] (frame.north west)--(frame.north east);
+        \node[anchor=south west] at (frame.north west) {Продолжение листинга A.#7};
+	},
+	%extras last pre={},
+    label={lst:#5},
 	#6
 }
 
@@ -200,7 +233,7 @@
 	xleftmargin=15pt
 }
 
-% Создание листинга
+% Создание листинга (используем эту команду для листингов)
 \newcommand{\listingfile}[5]{
 	\lstinputlisting[
 		float=!htbp,
@@ -219,6 +252,7 @@
 	figurename=Рисунок,
 	singlelinecheck=false,
 ]{caption}
+\usepackage{subcaption}
 \captionsetup[figure]{justification=centering}
 
 % Подключение пакетов для альбомной ориентации
@@ -228,14 +262,20 @@
 % Подключение математических пакетов
 \RequirePackage{amsmath}
 \RequirePackage{amssymb}
+\DeclareMathOperator{\erf}{erf}
 
 % Настройка библиографии
 \RequirePackage[
 	style=gost-numeric,
+    citestyle=numeric-comp,
 	language=auto,
 	autolang=other,
 	sorting=none,
+    maxbibnames=4,
+    minbibnames=3
+    %blockpunct=space
 ]{biblatex}
+%\toggletrue{bbx:gostbibliography}
 \RequirePackage{csquotes}
 
 % Подключение пакета для гиперссылок
@@ -243,6 +283,8 @@
 
 % Подключение пакета для управляющих конструкций
 \RequirePackage{xifthen}
+
+\RequirePackage{siunitx}
 
 
 % Титульная страница -----------------------------------------------------------
@@ -279,84 +321,161 @@
 \makeatother
 
 % Создание шапки титульной страницы
-\newcommand{\titlepageuniheader}[2]
-{
-	\begin{wrapfigure}[7]{l}{0.14\linewidth}
-		\vspace{3.4mm}
-		\hspace{-8mm}
-		\includegraphics[width=0.89\linewidth]{bmstu-logo}
-	\end{wrapfigure}
-	
-	{
-		\singlespacing \small
-		Министерство науки и высшего образования Российской Федерации \\
-		Федеральное государственное бюджетное образовательное учреждение \\
-		высшего образования \\
-		<<Московский государственный технический университет \\
-		имени Н.~Э.~Баумана \\
-		(национальный исследовательский университет)>> \\
-		(МГТУ им. Н.~Э.~Баумана) \\
-	}
-	
-	\vspace{-4.2mm}
-	\vhrulefill{0.9mm} \\
-	\vspace{-7mm}
-	\vhrulefill{0.2mm} \\
-	\vspace{2.8mm}
-	
-	{
-		\small
-		ФАКУЛЬТЕТ \longunderline{<<#1>>} \\
-		\vspace{3.3mm}
-		КАФЕДРА \longunderline{<<#2>>} \\
-	}
-}
-
-% Создание шапки титульной страницы
 \newcommand{\titlepageheader}[0]
 {
-    \fontsize{12pt}{12pt}\selectfont
-    \noindent
+	\noindent
     \begin{minipage}{0.15\textwidth}
         \includegraphics[width=\linewidth]{bmstu-logo}
-    \end{minipage}
-    \noindent
+	\end{minipage}
+	\fontsize{12pt}{12pt}\selectfont
+	\noindent
     \begin{minipage}{0.85\textwidth}\centering
-    \linespread{1.1}\selectfont
-    \textbf{Министерство науки и высшего образования Российской Федерации}\\
-    \textbf{Федеральное государственное бюджетное образовательное
-    учреждение\\высшего образования}\\
-    \textbf{«Московский государственный технический университет~\\имени
-    Н.Э.~Баумана}\\
-    \textbf{(национальный исследовательский университет)»}\\
-    \textbf{(МГТУ им. Н.Э.~Баумана)}
-    \end{minipage}
+        \linespread{1.1}\selectfont
+        \textbf{Министерство науки и высшего образования Российской
+                Федерации}\\
+        \textbf{Федеральное государственное бюджетное образовательное
+                учреждение высшего образования}\\
+        \textbf{«Московский государственный технический университет~\\имени
+                Н.Э.~Баумана}\\
+        \textbf{(национальный исследовательский университет)»}\\
+        \textbf{(МГТУ им. Н.Э.~Баумана)}
+	\end{minipage}
     \begin{spacing}{0.2}
         ~\\
     \end{spacing}
+
     \noindent
-    \rule{17cm}{3pt}
+	\rule{17cm}{3pt}
     \\
     \begin{spacing}{0.1}
         ~\\
     \end{spacing}
-    \noindent ФАКУЛЬТЕТ
+	\noindent ФАКУЛЬТЕТ
     \uline
     {
-        ~~~~~~~~~~~~~~~~~~~~~~~~
-        <<Информатика и системы управления>>
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            «Информатика и системы управления»
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~
     }
     \newline\newline
-    \noindent КАФЕДРА
+	\noindent КАФЕДРА
     \uline{
-        ~~~~~~~~~~~~
-        <<Программное обеспечение ЭВМ и информационные технологии>>
-        ~~~~~~
-    }
+            ~~~
+            «Программное обеспечение ЭВМ и информационные технологии»
+            ~~~~~~~~~
+        }
+    \newline\newline
     \newline
 }
 
+\newcommand{\titlepageheaderibm}[0]
+{
+	\noindent
+    \begin{minipage}{0.15\textwidth}
+        \includegraphics[width=\linewidth]{bmstu-logo}
+	\end{minipage}
+	\fontsize{12pt}{12pt}\selectfont
+	\noindent
+    \begin{minipage}{0.85\textwidth}\centering
+        \linespread{1.1}\selectfont
+        \textbf{Министерство науки и высшего образования Российской
+                Федерации}\\
+        \textbf{Федеральное государственное бюджетное образовательное
+                учреждение высшего образования}\\
+        \textbf{«Московский государственный технический университет~\\имени
+                Н.Э.~Баумана}\\
+        \textbf{(национальный исследовательский университет)»}\\
+        \textbf{(МГТУ им. Н.Э.~Баумана)}
+	\end{minipage}
+    \begin{spacing}{0.2}
+        ~\\
+    \end{spacing}
+
+    \noindent
+	\rule{17cm}{3pt}
+    \\
+    \begin{spacing}{0.1}
+        ~\\
+    \end{spacing}
+	\noindent ФАКУЛЬТЕТ
+    \uline
+    {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~
+            «Инженерный бизнес и менеджмент»
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    }
+    \newline\newline
+	\noindent КАФЕДРА
+    \uline{
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            «ИБМ-3 Промышленная логистика»
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        }
+    \newline\newline
+    \newline
+}
+
+% Установка заголовков РПЗ
+\newcommand{\titlepagenotetitle}[2]
+{
+	\fontsize{22pt}{22pt}\selectfont
+	\begin{center}
+        \textbf{РАСЧЕТНО-ПОЯСНИТЕЛЬНАЯ ЗАПИСКА}\\
+        ~\\
+        \fontsize{20pt}{20pt}\selectfont
+        \textsl{К #1}\\
+        \fontsize{14pt}{14pt}\selectfont
+        ~\\
+        \fontsize{20pt}{20pt}\selectfont
+        \textsl{НА ТЕМУ:}\\
+        ~\\
+        «#2»
+	\end{center}
+}
+
+\newcommand{\titlereportitle}[3]
+{
+	\fontsize{18pt}{18pt}\selectfont
+	\begin{center}
+        \textbf{ОТЧЕТ ПО #1}\\
+        \textbf{по курсу <<#2>>}\\
+        ~\\
+        \fontsize{16pt}{16pt}\selectfont
+        <<#3>>
+	\end{center}
+}
+
+\newcommand{\titlehwtitle}[2]
+{
+	\fontsize{18pt}{18pt}\selectfont
+	\begin{center}
+        \textbf{ДОМАШНЕЕ ЗАДАНИЕ}\\
+        \textbf{по курсу <<#1>>}\\
+        ~\\
+        \fontsize{16pt}{16pt}\selectfont
+        \text{<<#2>>}
+	\end{center}
+}
+
+\newcommand{\titlerw}[1]
+{
+    \titlepagenotetitle{НАУЧНО-ИССЛЕДОВАТЕЛЬСКОЙ РАБОТЕ}{#1}
+}
+
+\newcommand{\titlecw}[1]
+{
+    \titlepagenotetitle{КУРСОВОЙ РАБОТЕ}{#1}
+}
+
+\newcommand{\titlelabreport}[2]
+{
+    \titlereportitle{ЛАБОРАТОРНОЙ РАБОТЕ}{#1}{#2}
+}
+
+\newcommand{\titlenumlabreport}[3]
+{
+    \titlereportitle{ЛАБОРАТОРНОЙ РАБОТЕ №#1}{#2}{#3}
+}
 
 \newenvironment{performers}
 {
@@ -370,79 +489,58 @@
 
 \newcommand{\student}[2]
 {
-    Студент: &
-    $\text{\uline{#1}}$ &
+    Студент: &
+    $\text{\uline{#1}}$ &
     &
-    $\text{\uline{~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~}}$ &
-    $\text{\uline{#2}}$ \\
+    $\text{\uline{~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~}}$ &
+    $\text{\uline{#2}}$ \\
     &
-    \footnotesize (группа) &
+    \footnotesize (группа) &
     &
-    \footnotesize (подпись, дата) &
-    \footnotesize (И. О. Фамилия) \\
-}
-
-\newcommand{\performersspace}[0]
-{
-    & & & & \\
+    \footnotesize (подпись, дата) &
+    \footnotesize (И. О. Фамилия) \\
 }
 
 \newcommand{\supervisor}[1]
 {
-    Преподаватель: &
+	Преподаватель:&
     &
     &
-    $\text{\uline{~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~}}$ &
-    $\text{\uline{#1}}$ \\
+    $\text{\uline{~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~}}$ &
+    $\text{\uline{#1}}$ \\
     &
     &
     &
-    \footnotesize (подпись, дата) &
-    \footnotesize (И. О. Фамилия) \\
+    \footnotesize (подпись, дата) &
+    \footnotesize (И. О. Фамилия) \\
+}
+
+\newcommand{\sciadvisor}[1]
+{
+	Руководитель:&
+    &
+    &
+    $\text{\uline{~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~}}$ &
+    $\text{\uline{#1}}$ \\
+    &
+    &
+    &
+    \footnotesize (подпись, дата) &
+    \footnotesize (И. О. Фамилия) \\
+}
+
+\newcommand{\performersspace}[0]
+{
+    \footnotesize ~ & \footnotesize ~ & \footnotesize ~
+                    & \footnotesize ~ & \footnotesize ~ \\
 }
 
 \newcommand{\makeyear}
 {
-    \fontsize{14pt}{14pt}\selectfont
-        \begin{center}
-        \textit{\the\year~г.}
-        \end{center}
-}
-
-
-\newcommand{\titlerw}[1]
-{
-    \fontsize{22pt}{22pt}\selectfont
-    \begin{center}
-        \textbf{РАСЧЕТНО-ПОЯСНИТЕЛЬНАЯ ЗАПИСКА}\\
-        ~\\
-        \fontsize{20pt}{20pt}\selectfont
-        \textbf{\textit{К НАУЧНО-ИССЛЕДОВАТЕЛЬСКОЙ РАБОТЕ}}\\
-        \fontsize{14pt}{14pt}\selectfont
-        ~\\
-        \fontsize{20pt}{20pt}\selectfont
-        \textbf{\textit{НА ТЕМУ:}}\\
-        ~\\
-        <<#1>>
-    \end{center}
-}
-
-
-% Установка заголовков РПЗ
-\newcommand{\titlepagenotetitle}[2]
-{
-	{
-		\LARGE \bfseries
-		РАСЧЕТНО-ПОЯСНИТЕЛЬНАЯ ЗАПИСКА \\
-	}
-	\vspace{5mm}
-	{
-		\Large \itshape
-		#1 \\
-		\vspace{5mm}
-		НА ТЕМУ: \\
-		<<#2>> \\
-	}
+    \fontsize{14pt}{14pt}\selectfont
+	\begin{center}
+        \textit{\the\year~г.}
+	\end{center}
 }
 
 % Установка заголовков отчета
@@ -612,7 +710,7 @@
 	\chapter*{РЕФЕРАТ}
 	\addcontentsline{toc}{chapter}{РЕФЕРАТ}
 	
-	Расчетно-пояснительная записка \begin{NoHyper}\pageref{LastPage}\end{NoHyper}~с., \totfig~рис., \tottab~табл., \thetotbibentries~источн., 0~прил.
+	Расчетно-пояснительная записка \begin{NoHyper}\pageref{LastPage}\end{NoHyper}~с., \totfig~рис., \tottab~табл., \thetotbibentries~источн., 1~прил.
 	%\total{appendixchapters}~прил.
 	
 	\noindent \MakeUppercase{#1} \par
